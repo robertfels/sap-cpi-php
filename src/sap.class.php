@@ -1,5 +1,5 @@
 <?php
-namespace Contiva\SapCpiHelper;
+namespace contiva\sapcpiphp;
 class SapCpiHelper {
     public $aMemberVar = 'aMemberVar Member Variable';
     public $aFuncName = 'aMemberFunc';
