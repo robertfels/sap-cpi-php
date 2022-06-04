@@ -1,7 +1,12 @@
 {
     "name": "contiva/sap-cpi-php",
+    "description": "Implementation of SAP CPI APIs in PHP",
+    "keywords": ["sap btp","sap cpi"],
+    "homepage": "https://github.com/contiva/sap-cpi-php",
+    "license": "MIT",
     "require": {
-        "guzzlehttp/guzzle": "^7.4"
+        "guzzlehttp/guzzle": "^7.4",
+        "php": ">=8.0.0"
     },
     "autoload": {
         "psr-4": {
@@ -11,7 +16,9 @@
     "authors": [
         {
             "name": "Robert Fels",
-            "email": "robert.fels@contiva.com"
+            "email": "robert.fels@contiva.com",
+            "homepage": "https://contiva.com",
+            "role": "Developer"
         }
     ]
 }
