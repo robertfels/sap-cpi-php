@@ -1,0 +1,17 @@
+{
+    "name": "contiva/sap-cpi-php",
+    "require": {
+        "guzzlehttp/guzzle": "^7.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Contiva\\SapCpiPhp\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Robert Fels",
+            "email": "robert.fels@contiva.com"
+        }
+    ]
+}
