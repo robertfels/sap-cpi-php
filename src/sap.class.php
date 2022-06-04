@@ -7,4 +7,4 @@ class SapCpiHelper {
     function aMemberFunc() {
         print 'Inside `aMemberFunc()`';
     }
-}
+} 
