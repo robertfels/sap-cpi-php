@@ -11,11 +11,11 @@ class SapCpiHelper extends Connection
     public ?object $package;
 
     /**
-     * getArtifact
+     * readArtifact
      *
      * @return object
      */
-    public function getArtifact(string $artifactId)
+    public function readArtifact(string $artifactId)
     {
         $this->artifactId = $artifactId;
         $path = '/api/v1/IntegrationDesigntimeArtifacts(Id=%27' . $this->artifactId . '%27,Version=%27' . $this->artifactVersion . '%27)';
@@ -25,11 +25,28 @@ class SapCpiHelper extends Connection
     }
 
     /**
-     * getPackage
+     * createPackage
+     *
+     * @param  mixed $id
+     * @param  mixed $name
+     * @param  mixed $shortText
+     * @return int
+     */
+    public function createPackage(string $id, string $name, string $shortText){
+        $path = '/api/v1/IntegrationPackages';
+        $package['Id'] = $id;
+        $package['Name'] = $name;
+        $package['ShortText'] = $shortText;
+        $body = json_encode($package);
+        return $this->post($body,$path);
+    } 
+
+    /**
+     * readPackage
      *
      * @return object
      */
-    public function getPackage(string $packageId)
+    public function readPackage(string $packageId)
     {
         $this->packageId = $packageId;
         $path = '/api/v1/IntegrationPackages(%27' . $this->packageId . '%27)';
@@ -38,20 +55,5 @@ class SapCpiHelper extends Connection
         return $this->package;
     }
     
-    /**
-     * setPackage
-     *
-     * @param  mixed $id
-     * @param  mixed $name
-     * @param  mixed $shortText
-     * @return int
-     */
-    public function setPackage(string $id, string $name, string $shortText){
-        $path = '/api/v1/IntegrationPackages';
-        $package['Id'] = $id;
-        $package['Name'] = $name;
-        $package['ShortText'] = $shortText;
-        $body = json_encode($package);
-        return $this->post($body,$path);
-    } 
+    
 }

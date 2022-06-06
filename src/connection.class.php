@@ -68,7 +68,7 @@ class Connection
         return (object) json_decode($response->getBody());
     }
 
-    public function post(string $body,string $path) : int
+    public function post(string $body,string $path)
     {
         try {
             $this->path = $path;
@@ -88,7 +88,91 @@ class Connection
             return $this->error;
         } catch (RequestException $e){
             $this->error = $e->getResponse()->getStatusCode();
+            return (object) json_decode( $e->getResponse()->getBody());
+        } catch (ClientException $e){
+            $this->error = $e->getResponse()->getStatusCode();
             return $this->error;
+        }
+        return $response->getStatusCode();
+    }
+
+    public function put(string $body,string $path)
+    {
+        try {
+            $this->path = $path;
+            $client = new Client(['exceptions'=>false]);
+            $response = $client->request('PUT', 'https://'.$this->hostname.':'.$this->port.$this->path, [
+                'auth' => $this->auth,
+                'cookies' => $this->cookie,
+                'body' => $body,
+                'headers' => [
+                    'Content-Type'  => 'application/json',
+                    'Accept'        => 'application/json',
+                    'x-csrf-token'  => $this->token,
+                ]
+            ]);
+        } catch (ConnectException $e){
+            $this->error = 111;
+            return $this->error;
+        } catch (RequestException $e){
+            $this->error = $e->getResponse()->getStatusCode();
+            return (object) json_decode( $e->getResponse()->getBody());
+        } catch (ClientException $e){
+            $this->error = $e->getResponse()->getStatusCode();
+            return $this->error;
+        }
+        return $response->getStatusCode();
+    }
+
+    public function delete(string $body,string $path)
+    {
+        try {
+            $this->path = $path;
+            $client = new Client(['exceptions'=>false]);
+            $response = $client->request('DELETE', 'https://'.$this->hostname.':'.$this->port.$this->path, [
+                'auth' => $this->auth,
+                'cookies' => $this->cookie,
+                'body' => $body,
+                'headers' => [
+                    'Content-Type'  => 'application/json',
+                    'Accept'        => 'application/json',
+                    'x-csrf-token'  => $this->token,
+                ]
+            ]);
+        } catch (ConnectException $e){
+            $this->error = 111;
+            return $this->error;
+        } catch (RequestException $e){
+            $this->error = $e->getResponse()->getStatusCode();
+            return (object) json_decode( $e->getResponse()->getBody());
+        } catch (ClientException $e){
+            $this->error = $e->getResponse()->getStatusCode();
+            return $this->error;
+        }
+        return $response->getStatusCode();
+    }
+
+    public function patch(string $body,string $path)
+    {
+        try {
+            $this->path = $path;
+            $client = new Client(['exceptions'=>false]);
+            $response = $client->request('PATCH', 'https://'.$this->hostname.':'.$this->port.$this->path, [
+                'auth' => $this->auth,
+                'cookies' => $this->cookie,
+                'body' => $body,
+                'headers' => [
+                    'Content-Type'  => 'application/json',
+                    'Accept'        => 'application/json',
+                    'x-csrf-token'  => $this->token,
+                ]
+            ]);
+        } catch (ConnectException $e){
+            $this->error = 111;
+            return $this->error;
+        } catch (RequestException $e){
+            $this->error = $e->getResponse()->getStatusCode();
+            return (object) json_decode( $e->getResponse()->getBody());
         } catch (ClientException $e){
             $this->error = $e->getResponse()->getStatusCode();
             return $this->error;
