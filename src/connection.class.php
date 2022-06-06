@@ -13,11 +13,10 @@ class Connection
     private string $hostname;
     private int $port = 443;
     private string $path;
-    private CookieJar $jar;
     private array $auth;
     private ?string $error;
     private string $token;
-    private string $cookie;
+    private CookieJar $cookie;
 
     function __construct(string $hostname, string $username, string $password, string $path = "/api/v1/", int $port = 443) {
         $this->setUrl($hostname,$port);
@@ -41,11 +40,11 @@ class Connection
     private function setCredentials(string $username, string $password)
     {
         $this->auth = [$username, $password];
-        $this->jar = new CookieJar();
+        $this->cookie = new CookieJar();
         return $this->auth();
     }
 
-    public function get(string $path) : object
+    public function get(string $path) : object|null
     {
         try {
             $this->path = $path;
@@ -58,26 +57,54 @@ class Connection
             ]);
         } catch (ConnectException $e){
             $this->error = 111;
-            return false;
+            return null;
         } catch (RequestException $e){
             $this->error = $e->getResponse()->getStatusCode();
-            return false;
+            return (object) json_decode( $e->getResponse()->getBody());
         } catch (ClientException $e){
             $this->error = $e->getResponse()->getStatusCode();
-            return false;
+            return null;
         }
         return (object) json_decode($response->getBody());
+    }
+
+    public function post(string $body,string $path) : int
+    {
+        try {
+            $this->path = $path;
+            $client = new Client(['exceptions'=>false]);
+            $response = $client->request('POST', 'https://'.$this->hostname.':'.$this->port.$this->path, [
+                'auth' => $this->auth,
+                'cookies' => $this->cookie,
+                'body' => $body,
+                'headers' => [
+                    'Content-Type'  => 'application/json',
+                    'Accept'        => 'application/json',
+                    'x-csrf-token'  => $this->token,
+                ]
+            ]);
+        } catch (ConnectException $e){
+            $this->error = 111;
+            return $this->error;
+        } catch (RequestException $e){
+            $this->error = $e->getResponse()->getStatusCode();
+            return $this->error;
+        } catch (ClientException $e){
+            $this->error = $e->getResponse()->getStatusCode();
+            return $this->error;
+        }
+        return $response->getStatusCode();
     }
 
     public function auth() : bool
     {
         try {
-            $client = new Client(['exception'=>false,'cookies' => $this->jar]);
+            $client = new Client(['exception'=>false,'cookies' => $this->cookie]);
             $response = $client->request('GET', 'https://'.$this->hostname.':'.$this->port.$this->path, [
                 'auth' => $this->auth,
                 'headers' => [
                     'Accept'        => 'application/json',
-                    'x-csrf-token'  => 'Fetch'
+                    'X-CSRF-Token'  => 'Fetch'
                 ]
             ]);
         } catch (ConnectException $e){

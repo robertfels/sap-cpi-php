@@ -1,12 +1,6 @@
 <?php
 namespace contiva\sapcpiphp;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Cookie\CookieJar;
-use GuzzleHttp\Cookie\SessionCookieJar;
-
 class SapCpiHelper extends Connection
 {
     // Die abgeleitete Klasse zwingen, diese Methoden zu definieren
@@ -14,17 +8,7 @@ class SapCpiHelper extends Connection
     private string $packageId;
     private string $artifactVersion = "active";
     public object $artifact;
-    public object $package;
-    
-    /**
-     * getConnection
-     *
-     * @return bool
-     */
-    public function getConnection(): bool
-    {   
-        return $this->auth();
-    }
+    public ?object $package;
 
     /**
      * getArtifact
@@ -53,4 +37,21 @@ class SapCpiHelper extends Connection
         $this->package = $this->get($path);
         return $this->package;
     }
+    
+    /**
+     * setPackage
+     *
+     * @param  mixed $id
+     * @param  mixed $name
+     * @param  mixed $shortText
+     * @return int
+     */
+    public function setPackage(string $id, string $name, string $shortText){
+        $path = '/api/v1/IntegrationPackages';
+        $package['Id'] = $id;
+        $package['Name'] = $name;
+        $package['ShortText'] = $shortText;
+        $body = json_encode($package);
+        return $this->post($body,$path);
+    } 
 }
