@@ -10,7 +10,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Contiva\\SapCpiPhp\\": "src/"
+            "contiva\\sapcpiphp\\": "src/"
         }
     },
     "authors": [

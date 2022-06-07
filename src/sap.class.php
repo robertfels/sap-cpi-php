@@ -7,7 +7,7 @@ class SapCpiHelper extends Connection
     private string $artifactId;
     private string $packageId;
     private string $artifactVersion = "active";
-    public object $artifact;
+    public ?object $artifact;
     public ?object $package;
     
     /**
@@ -23,6 +23,7 @@ class SapCpiHelper extends Connection
         if ((empty($this->artifact)) || ((!empty($this->artifact->d->Id)) && ($this->artifactId != $this->artifact->d->Id)) || (empty($this->artifact->d->Id)))    
         $this->artifact = $this->get($path);
         return $this->artifact;
+
     }
 
     /**
