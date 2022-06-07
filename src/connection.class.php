@@ -15,7 +15,7 @@ class Connection
     private string $path;
     private array $auth;
     private ?string $error;
-    private string $token;
+    private ?string $token;
     private CookieJar $cookie;
 
     function __construct(string $hostname, string $username, string $password, string $path = "/api/v1/", int $port = 443) {
@@ -44,8 +44,11 @@ class Connection
         return $this->auth();
     }
 
-    public function get(string $path) : object|null
+    public function get(string $path) : object
     {
+        if ($this->token == null)
+        return (object) array("status"=>"error","message"=>"Please auth first!");
+        
         try {
             $this->path = $path;
             $client = new Client(['exception'=>false]);
@@ -57,19 +60,22 @@ class Connection
             ]);
         } catch (ConnectException $e){
             $this->error = 111;
-            return null;
+            return (object) array("status"=>"error","message"=>"Connect Error");
         } catch (RequestException $e){
             $this->error = $e->getResponse()->getStatusCode();
-            return (object) json_decode( $e->getResponse()->getBody());
+            return (object) array("status"=>"error","message"=>json_decode( $e->getResponse()->getBody()),true);
         } catch (ClientException $e){
             $this->error = $e->getResponse()->getStatusCode();
-            return null;
+            return (object) array("status"=>"error","message"=>"Client Error");
         }
         return (object) json_decode($response->getBody());
     }
 
-    public function post(string $body,string $path)
+    public function post(string $body,string $path) : object
     {
+        if ($this->token == null)
+        return (object) array("status"=>"error","message"=>"Please auth first!");
+        
         try {
             $this->path = $path;
             $client = new Client(['exceptions'=>false]);
@@ -85,19 +91,22 @@ class Connection
             ]);
         } catch (ConnectException $e){
             $this->error = 111;
-            return $this->error;
+            return (object) array("status"=>"error","message"=>"Connect Error");
         } catch (RequestException $e){
             $this->error = $e->getResponse()->getStatusCode();
-            return (object) json_decode( $e->getResponse()->getBody());
+            return (object) array("status"=>"error","message"=>json_decode( $e->getResponse()->getBody()),true);
         } catch (ClientException $e){
             $this->error = $e->getResponse()->getStatusCode();
-            return $this->error;
+            return (object) array("status"=>"error","message"=>"Client Error");
         }
-        return $response->getStatusCode();
+        return (object) array("status"=>"success");
     }
 
-    public function put(string $body,string $path)
+    public function put(string $body,string $path) : object
     {
+        if ($this->token == null)
+        return (object) array("status"=>"error","message"=>"Please auth first!");
+
         try {
             $this->path = $path;
             $client = new Client(['exceptions'=>false]);
@@ -113,19 +122,22 @@ class Connection
             ]);
         } catch (ConnectException $e){
             $this->error = 111;
-            return $this->error;
+            return (object) array("status"=>"error","message"=>"Connect Error");
         } catch (RequestException $e){
             $this->error = $e->getResponse()->getStatusCode();
-            return (object) json_decode( $e->getResponse()->getBody());
+            return (object) array("status"=>"error","message"=>json_decode( $e->getResponse()->getBody()),true);
         } catch (ClientException $e){
             $this->error = $e->getResponse()->getStatusCode();
-            return $this->error;
+            return (object) array("status"=>"error","message"=>"Client Error");
         }
-        return $response->getStatusCode();
+        return (object) array("status"=>"success");
     }
 
-    public function delete(string $body,string $path)
+    public function delete(string $path,string $body = null) : object
     {
+        if ($this->token == null)
+        return (object) array("status"=>"error","message"=>"Please auth first!");
+
         try {
             $this->path = $path;
             $client = new Client(['exceptions'=>false]);
@@ -141,19 +153,22 @@ class Connection
             ]);
         } catch (ConnectException $e){
             $this->error = 111;
-            return $this->error;
+            return (object) array("status"=>"error","message"=>"Connect Error");
         } catch (RequestException $e){
             $this->error = $e->getResponse()->getStatusCode();
-            return (object) json_decode( $e->getResponse()->getBody());
+            return (object) array("status"=>"error","message"=>json_decode( $e->getResponse()->getBody()),true);
         } catch (ClientException $e){
             $this->error = $e->getResponse()->getStatusCode();
-            return $this->error;
+            return (object) array("status"=>"error","message"=>"Client Error");
         }
-        return $response->getStatusCode();
+        return (object) array("status"=>"success");
     }
 
-    public function patch(string $body,string $path)
+    public function patch(string $body,string $path) : object
     {
+        if ($this->token == null)
+        return (object) array("status"=>"error","message"=>"Please auth first!");
+
         try {
             $this->path = $path;
             $client = new Client(['exceptions'=>false]);
@@ -169,21 +184,21 @@ class Connection
             ]);
         } catch (ConnectException $e){
             $this->error = 111;
-            return $this->error;
+            return (object) array("status"=>"error","message"=>"Connect Error");
         } catch (RequestException $e){
             $this->error = $e->getResponse()->getStatusCode();
-            return (object) json_decode( $e->getResponse()->getBody());
+            return (object) array("status"=>"error","message"=>json_decode( $e->getResponse()->getBody()),true);
         } catch (ClientException $e){
             $this->error = $e->getResponse()->getStatusCode();
-            return $this->error;
+            return (object) array("status"=>"error","message"=>"Client Error");
         }
-        return $response->getStatusCode();
+        return (object) array("status"=>"success");
     }
 
-    public function auth() : bool
+    public function auth() : object
     {
         try {
-            $client = new Client(['exception'=>false,'cookies' => $this->cookie]);
+            $client = new Client(['exceptions'=>true,'cookies' => $this->cookie]);
             $response = $client->request('GET', 'https://'.$this->hostname.':'.$this->port.$this->path, [
                 'auth' => $this->auth,
                 'headers' => [
@@ -193,15 +208,32 @@ class Connection
             ]);
         } catch (ConnectException $e){
             $this->error = 111;
-            return false;
+            $this->token = null;
+            return (object) array("status"=>"error","message"=>"Connect Error");
         } catch (RequestException $e){
+            $this->error = 999;
+            if ($e->getResponse() != NULL)
             $this->error = $e->getResponse()->getStatusCode();
-            return false;
+            $this->token = null;
+            switch ($this->error) {
+                case 404:
+                    return (object) array("status"=>"error","message"=>"Host not found","code"=>$this->error);
+                case 401:
+                    return (object) array("status"=>"error","message"=>"Credentials not correct","code"=>$this->error);
+                case 403:
+                    return (object) array("status"=>"error","message"=>"Permissions denied","code"=>$this->error);
+                case 999:
+                    return (object) array("status"=>"error","message"=>"Undefined Error, maybe SSL","code"=>$this->error);
+                default:
+                    return (object) array("status"=>"error","message"=>$this->error);
+            }
         } catch (ClientException $e){
-            $this->error = $e->getResponse()->getStatusCode();
-            return false;
+            //$this->error = $e->getResponse()->getStatusCode();
+            $this->token = null;
+            return (object) array("status"=>"error","message"=>"Client Error");
         }
+
         $this->token = $response->getHeader('x-csrf-token')[0];
-        return true;
+        return (object) array("status"=>"success");
     }
 }

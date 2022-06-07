@@ -9,10 +9,11 @@ class SapCpiHelper extends Connection
     private string $artifactVersion = "active";
     public object $artifact;
     public ?object $package;
-
+    
     /**
      * readArtifact
      *
+     * @param  string $artifactId
      * @return object
      */
     public function readArtifact(string $artifactId)
@@ -27,10 +28,10 @@ class SapCpiHelper extends Connection
     /**
      * createPackage
      *
-     * @param  mixed $id
-     * @param  mixed $name
-     * @param  mixed $shortText
-     * @return int
+     * @param  string $id
+     * @param  string $name
+     * @param  string $shortText
+     * @return object
      */
     public function createPackage(string $id, string $name, string $shortText){
         $path = '/api/v1/IntegrationPackages';
@@ -40,10 +41,11 @@ class SapCpiHelper extends Connection
         $body = json_encode($package);
         return $this->post($body,$path);
     } 
-
+        
     /**
      * readPackage
      *
+     * @param  string $packageId
      * @return object
      */
     public function readPackage(string $packageId)
@@ -55,5 +57,28 @@ class SapCpiHelper extends Connection
         return $this->package;
     }
     
+    /**
+     * readValueMappings
+     *
+     * @param  string $valueMappingId
+     * @return object
+     */
+    public function readValueMappings(string $packageId)
+    {
+        $path = '/api/v1/IntegrationPackages(%27' . $packageId . '%27)/ValueMappingDesigntimeArtifacts';
+        return $this->get($path);
+    }
+
+    /**
+     * deletePackage
+     *
+     * @param  string $packageId
+     * @return object
+     */
+    public function deletePackage(string $packageId) {
+        $this->packageId = $packageId;
+        $path = '/api/v1/IntegrationPackages(%27' . $this->packageId . '%27)';
+        return $this->delete($path);
+    }
     
 }
