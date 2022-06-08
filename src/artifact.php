@@ -14,10 +14,9 @@ class Artifact {
     public $Configurations;
     public $Ressources;
 
-    function __construct($Id,$Name,$Description) {
+    function __construct($Id,$Name) {
         $this->Id = $Id;
         $this->Name = $Name;
-        $this->Description = $Description;
     } 
     
     /**
