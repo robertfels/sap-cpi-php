@@ -254,5 +254,55 @@ class SapCpiHelper extends Connection
         $body = "";
         return $this->post($body,$path);
     }
+
+    /*
+     *  CONFIGURATIONS
+     */
+    
+    /**
+     * readConfigurations
+     *
+     * @param  string $artifactId
+     * @param  string $version
+     * @return object
+     */
+    public function readConfigurations(string $artifactId,string $version="active")
+    {
+        $path = '/api/v1/IntegrationDesigntimeArtifacts(Id=%27' . $artifactId . '%27,Version=%27' . $version . '%27)/Configurations';
+        return $this->get($path);
+    }
+    
+    /**
+     * updateConfiguration
+     *
+     * @param  string $artifactId
+     * @param  string $version
+     * @param  array $item
+     * @return object
+     */
+    public function updateConfiguration(string $artifactId,string $version="active",array $item)
+    {
+        $path = '/api/v1/IntegrationDesigntimeArtifacts(Id=%27' . $artifactId . '%27,Version=%27' . $version . '%27)/$links/Configurations(%27' . $item['ParameterKey'] . '%27)';
+        $body = json_encode(array("ParameterValue"=>$item['ParameterValue'],"DataType"=>$item['DataType']));
+        return $this->put($body,$path);
+    }
+    
+    /**
+     * updateConfigurations
+     *
+     * @param  string $artifactId
+     * @param  string $version
+     * @param  array $list
+     * @return void
+     */
+    public function updateConfigurations(string $artifactId,string $version="active",array $list)
+    {
+        foreach ($list as $item) {
+            $path = '/api/v1/IntegrationDesigntimeArtifacts(Id=%27' . $artifactId . '%27,Version=%27' . $version . '%27)/$links/Configurations(%27' . $item['ParameterKey'] . '%27)';
+            $body = json_encode(array("ParameterValue"=>$item['ParameterValue'],"DataType"=>$item['DataType']));
+            $result = $this->put($body,$path);
+        }
+        return $result;
+    }
     
 }
