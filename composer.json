@@ -6,6 +6,7 @@
     "homepage": "https://github.com/contiva/sap-cpi-php",
     "license": "MIT",
     "require": {
+        "php": "^7.2 || ^8.0",
         "guzzlehttp/guzzle": "^7.4"
     },
     "autoload": {
@@ -17,8 +18,7 @@
         {
             "name": "Robert Fels",
             "email": "robert.fels@contiva.com",
-            "homepage": "https://contiva.com",
-            "role": "Developer"
+            "homepage": "https://contiva.com"
         }
     ]
 }
