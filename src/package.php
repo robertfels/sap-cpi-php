@@ -21,7 +21,7 @@ class Package {
         $this->ShortName = $ShortName;
     } 
 
-    public function getPackage() {
+    public function getPackageAsJson() {
         return json_encode($this);
     }
 
