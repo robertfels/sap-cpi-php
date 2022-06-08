@@ -20,7 +20,12 @@ class Package {
         $this->Name = $Name;
         $this->ShortText = $ShortText;
     } 
-
+    
+    /**
+     * getPackageAsJson
+     *
+     * @return string
+     */
     public function getPackageAsJson() {
         return json_encode($this);
     }

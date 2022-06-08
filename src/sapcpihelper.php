@@ -68,14 +68,20 @@ class SapCpiHelper extends Connection
     /**
      * deletePackage
      *
-     * @param  string $packageId
+     * @param  Package $package
      * @return object
      */
     public function deletePackage(Package $package) {
         $path = '/api/v1/IntegrationPackages(%27' . $package->Id . '%27)';
         return $this->delete($path);
     }
-
+    
+    /**
+     * updatePackage
+     *
+     * @param  Package $package
+     * @return object
+     */
     public function updatePackage(Package $package) {
         $path = '/api/v1/IntegrationPackages(%27' . $package->Id . '%27)';
         $body = json_encode($package);
