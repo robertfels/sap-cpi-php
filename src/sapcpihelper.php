@@ -49,7 +49,7 @@ class SapCpiHelper extends Connection
     public function readPackages()
     {
         $path = '/api/v1/IntegrationPackages';
-        return $this->$this->get($path);
+        return $this->get($path);
     }
 
     /**
