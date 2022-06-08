@@ -122,8 +122,8 @@ class SapCpiHelper extends Connection
      * @return object
      */
     public function deployArtifact(Artifact $artifact){
-        $path = '/api/v1/DeployIntegrationDesigntimeArtifact';
-        $body = json_encode($artifact);
+        $path = '/api/v1/DeployIntegrationDesigntimeArtifact?Id=%27'.$artifact->Id.'%27&Version=%27'.$artifact->Version.'%27';
+        $body = "";
         return $this->post($body,$path);
     }
     
