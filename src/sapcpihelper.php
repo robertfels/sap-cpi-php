@@ -40,6 +40,41 @@ class SapCpiHelper extends Connection
         $this->package = $this->get($path);
         return $this->package;
     }
+
+    /**
+     * readPackages
+     *
+     * @return object
+     */
+    public function readPackages()
+    {
+        $path = '/api/v1/IntegrationPackages';
+        return $this->$this->get($path);
+    }
+
+    /**
+     * readFlowsOfPackage
+     *
+     * @param  string $packageId
+     * @return object
+     */
+    public function readFlowsOfPackage(string $packageId)
+    {
+        $path = '/api/v1/IntegrationPackages(%27' . $packageId . '%27)/IntegrationDesigntimeArtifacts';
+        return $this->$this->get($path);
+    }
+
+    /**
+     * readValueMapsOfPackage
+     *
+     * @param  string $packageId
+     * @return object
+     */
+    public function readValueMapsOfPackage(string $packageId)
+    {
+        $path = '/api/v1/IntegrationPackages(%27' . $packageId . '%27)/ValueMappingDesigntimeArtifacts';
+        return $this->$this->get($path);
+    }
     
     /**
      * updatePackage
