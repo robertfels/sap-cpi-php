@@ -20,6 +20,11 @@ class Package {
         $this->Name = $Name;
         $this->ShortText = $ShortText;
     } 
+
+    public function __toString()
+    {
+        return __CLASS__;
+    }
     
     /**
      * getPackageAsJson
