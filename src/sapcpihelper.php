@@ -280,7 +280,7 @@ class SapCpiHelper extends Connection
      * @param  array $item
      * @return object
      */
-    public function updateConfiguration(string $artifactId,string $version="active",array $item)
+    public function updateConfiguration(string $artifactId,array $item,string $version="active")
     {
         $path = '/api/v1/IntegrationDesigntimeArtifacts(Id=%27' . $artifactId . '%27,Version=%27' . $version . '%27)/$links/Configurations(%27' . $item['ParameterKey'] . '%27)';
         $body = json_encode(array("ParameterValue"=>$item['ParameterValue'],"DataType"=>$item['DataType']));
@@ -295,7 +295,7 @@ class SapCpiHelper extends Connection
      * @param  array $list
      * @return void
      */
-    public function updateConfigurations(string $artifactId,string $version="active",array $list)
+    public function updateConfigurations(string $artifactId,array $list,string $version="active")
     {
         foreach ($list as $item) {
             $path = '/api/v1/IntegrationDesigntimeArtifacts(Id=%27' . $artifactId . '%27,Version=%27' . $version . '%27)/$links/Configurations(%27' . $item['ParameterKey'] . '%27)';

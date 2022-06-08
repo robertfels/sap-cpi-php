@@ -2,3 +2,5 @@
 /.vscode/*
 composer.lock
 /src/index.php
+/tests/*
+test.sh

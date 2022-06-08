@@ -20,5 +20,8 @@
             "email": "robert.fels@contiva.com",
             "homepage": "https://contiva.com"
         }
-    ]
+    ],
+    "require-dev": {
+        "phpunit/phpunit": "^9"
+    }
 }
