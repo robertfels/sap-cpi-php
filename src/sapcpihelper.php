@@ -212,7 +212,13 @@ class SapCpiHelper extends Connection
         $path = '/api/v1/ValueMappingDesigntimeArtifacts(Id=%27' . $valueMapId . '%27,Version=%27' . $version . '%27)';
         return $this->get($path);
     }
-
+    
+    /**
+     * downloadValueMapping
+     *
+     * @param  ValueMapping $valueMapping
+     * @return object
+     */
     public function downloadValueMapping(ValueMapping $valueMapping) : object
     {
         $path = '/api/v1/ValueMappingDesigntimeArtifacts(Id=%27' . $valueMapping->Id . '%27,Version=%27' . $valueMapping->Version . '%27)/$value';
@@ -224,13 +230,25 @@ class SapCpiHelper extends Connection
         $valueMapping->ArtifactContent = $this->download($path);
         return $valueMapping;
     }
-
+    
+    /**
+     * uploadValueMapping
+     *
+     * @param  ValueMapping $valueMapping
+     * @return object
+     */
     public function uploadValueMapping(ValueMapping $valueMapping){
         $path = '/api/v1/ValueMappingDesigntimeArtifacts';
         $body = $valueMapping->asJson();
         return $this->post($body,$path);
     }
-
+    
+    /**
+     * deployValueMapping
+     *
+     * @param  ValueMapping $valueMapping
+     * @return object
+     */
     public function deployValueMapping(ValueMapping $valueMapping){
         $path = '/api/v1/DeployValueMappingDesigntimeArtifact?Id=%27'.$valueMapping->Id.'%27&Version=%27'.$valueMapping->Version.'%27';
         $body = "";
