@@ -29,16 +29,11 @@ class SapCpiHelper extends Connection
     /**
      * createPackage
      *
-     * @param  string $id
-     * @param  string $name
-     * @param  string $shortText
+     * @param Package $package
      * @return object
      */
-    public function createPackage(string $id, string $name, string $shortText){
+    public function createPackage(Package $package){
         $path = '/api/v1/IntegrationPackages';
-        $package['Id'] = $id;
-        $package['Name'] = $name;
-        $package['ShortText'] = $shortText;
         $body = json_encode($package);
         return $this->post($body,$path);
     } 
