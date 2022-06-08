@@ -1,7 +1,7 @@
 sap-cpi-php
 ===============
-[![Latest Stable Version](https://poser.pugx.org/contiva/sap-cpi-php/v/stable.svg)](https://packagist.org/packages/webmozart/assert)
-[![Total Downloads](https://poser.pugx.org/contiva/sap-cpi-php/downloads.svg)](https://packagist.org/packages/webmozart/assert)
+[![Latest Stable Version](https://poser.pugx.org/contiva/sap-cpi-php/v/stable.svg)](https://packagist.org/packages/contiva/sap-cpi-php)
+[![Total Downloads](https://poser.pugx.org/contiva/sap-cpi-php/downloads.svg)](https://packagist.org/packages/contiva/sap-cpi-php)
 
 With this library you can easily access the standard SAP API's for your SAP Cloud Platform Integration.
 https://api.sap.com/api/IntegrationContent/resource
