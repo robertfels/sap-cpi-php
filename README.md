@@ -19,14 +19,80 @@ Example
 -------
 
 ```php
-use Webmozart\Assert\Assert;
+require 'vendor/autoload.php';
 
-class Employee
-{
-    public function __construct($id)
-    {
-        Assert::integer($id, 'The employee ID must be an integer. Got: %s');
-        Assert::greaterThan($id, 0, 'The employee ID must be a positive integer. Got: %s');
-    }
+use contiva\sapcpiphp\Package;
+use contiva\sapcpiphp\SapCpiHelper;
+
+//Set Credentials
+$hostname = "yourtenant.it-cpi005.cfapps.eu20.hana.ondemand.com";
+$username = "user.name@muster.com";
+$password = "youSecretP4ssWord";
+
+//Init Package
+$cpihelper = new SapCpiHelper($hostname,$username,$password);
+
+//Authentication
+echo "Authentication...".PHP_EOL;
+$auth = $cpihelper->auth();
+if ($auth->status == "success") {
+    echo "success".PHP_EOL;
+} else {
+    echo $auth->message.PHP_EOL;
 }
+
+echo PHP_EOL;
+
+//Packages lesen
+echo "Packages read...".PHP_EOL;
+$result = $cpihelper->readPackages();
+if ($result->d) {
+    foreach ($result->d->results as $item) {
+        echo $item->Name.' ('.$item->Id.')'.PHP_EOL;
+    }
+    $lastOfUs = $result->d->results[9]->Id;
+} else {
+    echo $result->message->error->message->value.PHP_EOL;
+}
+
+echo PHP_EOL;
+
+//Artifacts lesen
+echo "Artifacts read...".PHP_EOL;
+$result = $cpihelper->readFlowsOfPackage($lastOfUs);
+if (isset($result->d)) {
+    foreach ($result->d->results as $item) {
+        echo $item->Name.' ('.$item->Id.')'.PHP_EOL;
+    }
+} else {
+    echo $result->message->error->message->value.PHP_EOL;
+}
+
+echo PHP_EOL;
+
+//Value Mappings lesen
+echo "Value Mappings from Package read...".PHP_EOL;
+$result = $cpihelper->readValueMapsOfPackage($lastOfUs);
+if (isset($result->d)) {
+    foreach ($result->d->results as $item) {
+        echo $item->Name.' ('.$item->Id.')'.PHP_EOL;
+    }
+} else {
+    echo $result->message->error->message->value.PHP_EOL;
+}
+
+echo PHP_EOL;
+
+//Value Mappings read
+echo "Value Mappings read...".PHP_EOL;
+$result = $cpihelper->readValueMappings();
+if (isset($result->d)) {
+    foreach ($result->d->results as $item) {
+        echo $item->Name.' ('.$item->Id.')'.PHP_EOL;
+    }
+} else {
+    echo $result->message->error->message->value.PHP_EOL;
+}
+
+echo PHP_EOL;
 ```
