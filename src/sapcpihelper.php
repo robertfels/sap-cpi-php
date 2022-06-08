@@ -10,21 +10,9 @@ class SapCpiHelper extends Connection
     public ?object $artifact;
     public ?object $package;
     
-    /**
-     * readArtifact
-     *
-     * @param  string $artifactId
-     * @return object
+    /*
+     *  PACKAGES
      */
-    public function readArtifact(string $artifactId)
-    {
-        $this->artifactId = $artifactId;
-        $path = '/api/v1/IntegrationDesigntimeArtifacts(Id=%27' . $this->artifactId . '%27,Version=%27' . $this->artifactVersion . '%27)';
-        if ((empty($this->artifact)) || ((!empty($this->artifact->d->Id)) && ($this->artifactId != $this->artifact->d->Id)) || (empty($this->artifact->d->Id)))    
-        $this->artifact = $this->get($path);
-        return $this->artifact;
-
-    }
 
     /**
      * createPackage
@@ -54,15 +42,15 @@ class SapCpiHelper extends Connection
     }
     
     /**
-     * readValueMappings
+     * updatePackage
      *
-     * @param  string $valueMappingId
+     * @param  Package $package
      * @return object
      */
-    public function readValueMappings(string $packageId)
-    {
-        $path = '/api/v1/IntegrationPackages(%27' . $packageId . '%27)/ValueMappingDesigntimeArtifacts';
-        return $this->get($path);
+    public function updatePackage(Package $package) { 
+        $path = '/api/v1/IntegrationPackages(%27' . $package->Id . '%27)';
+        $body = json_encode($package);
+        return $this->put($body,$path);
     }
 
     /**
@@ -75,17 +63,103 @@ class SapCpiHelper extends Connection
         $path = '/api/v1/IntegrationPackages(%27' . $package->Id . '%27)';
         return $this->delete($path);
     }
-    
+
+    /*
+     *  ARTIFACTS
+     */
+
     /**
-     * updatePackage
+     * createArtifact
      *
-     * @param  Package $package
+     * @param Artifact $artifact
      * @return object
      */
-    public function updatePackage(Package $package) { 
-        $path = '/api/v1/IntegrationPackages(%27' . $package->Id . '%27)';
-        $body = json_encode($package);
+    public function createArtifact(Artifact $artifact){
+        $path = '/api/v1/IntegrationDesigntimeArtifacts';
+        $body = json_encode($artifact);
+        return $this->post($body,$path);
+    } 
+        
+    /**
+     * readArtifact
+     *
+     * @param  string $artifactId
+     * @param  string $version
+     * @return object
+     */
+    public function readArtifact(string $artifactId,string $version="active")
+    {
+        $this->artifactId = $artifactId;
+        $this->artifactVersion = $version;
+        $path = '/api/v1/IntegrationDesigntimeArtifacts(Id=%27' . $this->artifactId . '%27,Version=%27' . $this->artifactVersion . '%27)';
+        if ((empty($this->artifact)) || ((!empty($this->artifact->d->Id)) && ($this->artifactId != $this->artifact->d->Id)) || (empty($this->artifact->d->Id)))    
+        $this->artifact = $this->get($path);
+        return $this->artifact;
+    }
+    
+    /**
+     * downloadArtifact
+     *
+     * @param  Artifact $artifact
+     * @return object
+     */
+    public function downloadArtifact(Artifact $artifact) : object
+    {
+        $path = '/api/v1/IntegrationDesigntimeArtifacts(Id=%27' . $artifact->Id . '%27,Version=%27' . $artifact->Version . '%27)/$value';
+        $download = $this->download($path);
+        
+        if (is_object($download))
+        return $download;
+
+        $artifact->ArtifactContent = base64_encode($this->download($path));
+        return $artifact;
+    }
+
+    /**
+     * deployArtifact
+     *
+     * @param Artifact $artifact
+     * @return object
+     */
+    public function deployArtifact(Artifact $artifact){
+        $path = '/api/v1/DeployIntegrationDesigntimeArtifact';
+        $body = json_encode($artifact);
+        return $this->post($body,$path);
+    }
+    
+    /**
+     * updateArtifact
+     *
+     * @param  Artifact $artifact
+     * @return object
+     */
+    public function updateArtifact(Artifact $artifact) { 
+        $path = '/api/v1/IntegrationDesigntimeArtifacts(Id=%27' . $artifact->Id . '%27,Version=%27' . $artifact->Version . '%27)';
+        $body = json_encode($artifact);
         return $this->put($body,$path);
+    }
+        
+    /**
+     * deleteArtifact
+     *
+     * @param  Artifact $artifact
+     * @return object
+     */
+    public function deleteArtifact(Artifact $artifact) {
+        $path = '/api/v1/IntegrationDesigntimeArtifacts(Id=%27' . $artifact->Id . '%27,Version=%27' . $artifact->Version . '%27)';
+        return $this->delete($path);
+    }
+    
+    /**
+     * readValueMappings
+     *
+     * @param  string $valueMappingId
+     * @return object
+     */
+    public function readValueMappings(string $packageId)
+    {
+        $path = '/api/v1/IntegrationPackages(%27' . $packageId . '%27)/ValueMappingDesigntimeArtifacts';
+        return $this->get($path);
     }
     
 }

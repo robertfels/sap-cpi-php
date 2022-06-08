@@ -71,6 +71,33 @@ class Connection
         return (object) json_decode($response->getBody());
     }
 
+    public function download(string $path) : string|object
+    {
+        if ($this->token == null)
+        return (object) array("status"=>"error","message"=>"Please auth first!");
+        
+        try {
+            $this->path = $path;
+            $client = new Client(['exception'=>false]);
+            $response = $client->request('GET', 'https://'.$this->hostname.':'.$this->port.$this->path, [
+                'auth' => $this->auth,
+                'headers' => [
+                    'Accept'        => 'application/json'
+                ]
+            ]);
+        } catch (ConnectException $e){
+            $this->error = 111;
+            return (object) array("status"=>"error","message"=>"Connect Error");
+        } catch (RequestException $e){
+            $this->error = $e->getResponse()->getStatusCode();
+            return (object) array("status"=>"error","message"=>json_decode( $e->getResponse()->getBody()),true);
+        } catch (ClientException $e){
+            $this->error = $e->getResponse()->getStatusCode();
+            return (object) array("status"=>"error","message"=>"Client Error");
+        }
+        return (string) base64_encode($response->getBody());
+    }
+
     public function post(string $body,string $path) : object
     {
         if ($this->token == null)
