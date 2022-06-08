@@ -82,7 +82,7 @@ class SapCpiHelper extends Connection
      * @param  Package $package
      * @return object
      */
-    public function updatePackage(Package $package) {
+    public function updatePackage(Package $package) { 
         $path = '/api/v1/IntegrationPackages(%27' . $package->Id . '%27)';
         $body = json_encode($package);
         return $this->put($body,$path);
