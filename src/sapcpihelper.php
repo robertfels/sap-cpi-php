@@ -61,7 +61,7 @@ class SapCpiHelper extends Connection
     public function readFlowsOfPackage(string $packageId)
     {
         $path = '/api/v1/IntegrationPackages(%27' . $packageId . '%27)/IntegrationDesigntimeArtifacts';
-        return $this->$this->get($path);
+        return $this->get($path);
     }
 
     /**
@@ -73,7 +73,7 @@ class SapCpiHelper extends Connection
     public function readValueMapsOfPackage(string $packageId)
     {
         $path = '/api/v1/IntegrationPackages(%27' . $packageId . '%27)/ValueMappingDesigntimeArtifacts';
-        return $this->$this->get($path);
+        return $this->get($path);
     }
     
     /**
