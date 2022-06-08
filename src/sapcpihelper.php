@@ -184,17 +184,51 @@ class SapCpiHelper extends Connection
         $path = '/api/v1/IntegrationDesigntimeArtifacts(Id=%27' . $artifact->Id . '%27,Version=%27' . $artifact->Version . '%27)';
         return $this->delete($path);
     }
+
+    /*
+     *  VALUE MAPPINGS
+     */
     
     /**
      * readValueMappings
      *
-     * @param  string $valueMappingId
      * @return object
      */
-    public function readValueMappings(string $packageId)
+    public function readValueMappings()
     {
-        $path = '/api/v1/IntegrationPackages(%27' . $packageId . '%27)/ValueMappingDesigntimeArtifacts';
+        $path = '/api/v1/ValueMappingDesigntimeArtifacts';
         return $this->get($path);
+    }
+    
+    /**
+     * readValueMapping
+     *
+     * @param  string $valueMapId
+     * @param  string $version
+     * @return object
+     */
+    public function readValueMapping(string $valueMapId,string $version="active")
+    {
+        $path = '/api/v1/ValueMappingDesigntimeArtifacts(Id=%27' . $valueMapId . '%27,Version=%27' . $version . '%27)';
+        return $this->get($path);
+    }
+
+    public function downloadValueMapping(ValueMapping $valueMapping) : object
+    {
+        $path = '/api/v1/ValueMappingDesigntimeArtifacts(Id=%27' . $valueMapping->Id . '%27,Version=%27' . $valueMapping->Version . '%27)/$value';
+        $download = $this->download($path);
+        
+        if (is_object($download))
+        return $download;
+
+        $valueMapping->ArtifactContent = $this->download($path);
+        return $valueMapping;
+    }
+
+    public function deployValueMapping(ValueMapping $valueMapping){
+        $path = '/api/v1/DeployIntegrationDesigntimeArtifact?Id=%27'.$valueMapping->Id.'%27&Version=%27'.$valueMapping->Version.'%27';
+        $body = "";
+        return $this->post($body,$path);
     }
     
 }

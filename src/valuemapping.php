@@ -1,15 +1,13 @@
 <?php
 namespace contiva\sapcpiphp;
 
-class Artifact {
+class ValueMapping {
 
     public string $Id;
     public string $Name;
     public string $Description;
     public string $PackageId;
     public string $Version;
-    public string $Sender;
-    public string $Receiver;
     public $ArtifactContent;
 
     function __construct($Id,$Name) {

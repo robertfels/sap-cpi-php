@@ -26,7 +26,7 @@ class Package {
      *
      * @return string
      */
-    public function getPackageAsJson() {
+    public function asJson() {
         return json_encode($this);
     }
 
