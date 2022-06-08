@@ -111,7 +111,7 @@ class SapCpiHelper extends Connection
         if (is_object($download))
         return $download;
 
-        $artifact->ArtifactContent = base64_encode($this->download($path));
+        $artifact->ArtifactContent = $this->download($path);
         return $artifact;
     }
 
