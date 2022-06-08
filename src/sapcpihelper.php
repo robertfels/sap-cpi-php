@@ -225,8 +225,14 @@ class SapCpiHelper extends Connection
         return $valueMapping;
     }
 
+    public function uploadValueMapping(ValueMapping $valueMapping){
+        $path = '/api/v1/ValueMappingDesigntimeArtifacts';
+        $body = $valueMapping->asJson();
+        return $this->post($body,$path);
+    }
+
     public function deployValueMapping(ValueMapping $valueMapping){
-        $path = '/api/v1/DeployIntegrationDesigntimeArtifact?Id=%27'.$valueMapping->Id.'%27&Version=%27'.$valueMapping->Version.'%27';
+        $path = '/api/v1/DeployValueMappingDesigntimeArtifact?Id=%27'.$valueMapping->Id.'%27&Version=%27'.$valueMapping->Version.'%27';
         $body = "";
         return $this->post($body,$path);
     }
