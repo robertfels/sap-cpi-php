@@ -15,10 +15,10 @@ class Package {
     public $Industries;
     public $LineOfBusiness;
 
-    function __construct($Id,$Name,$ShortName) {
+    function __construct($Id,$Name,$Description) {
         $this->Id = $Id;
         $this->Name = $Name;
-        $this->ShortName = $ShortName;
+        $this->Description = $Description;
     } 
 
     public function getPackageAsJson() {
