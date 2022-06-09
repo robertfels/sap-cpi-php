@@ -44,7 +44,7 @@ class Package {
     }
 
     /**
-     * enrichMetadata
+     * enrichMetadata for package
      *
      * @param  object $package
      * @return void
