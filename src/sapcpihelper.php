@@ -99,6 +99,7 @@ class SapCpiHelper extends Connection
      */
     public function deletePackage(Package $package) : object
     {
+        $package->Version = 'active';
         $path = '/api/v1/IntegrationPackages(%27' . $package->Id . '%27)';
         return $this->delete($path);
     }
@@ -190,6 +191,7 @@ class SapCpiHelper extends Connection
      */
     public function deleteArtifact(Artifact $artifact) : object
     {
+        $artifact->Version = 'active';
         $path = '/api/v1/IntegrationDesigntimeArtifacts(Id=%27' . $artifact->Id . '%27,Version=%27' . $artifact->Version . '%27)';
         return $this->delete($path);
     }
