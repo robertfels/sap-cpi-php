@@ -20,6 +20,16 @@ class Package {
         $this->Name = $Name;
         $this->ShortText = $ShortText;
     } 
+
+    public static function withObject( object $package ) {
+        $instance = new self($package->d->Id,$package->d->Name,$package->d->ShortText);
+        $instance->Description = $package->d->Description;
+        $instance->PackageId = $package->d->PackageId;
+        $instance->Version = $package->d->Version;
+        $instance->Sender = $package->d->Sender;
+        $instance->Receiver = $package->d->Receiver;
+        return $instance;
+    }
     
     /**
      * getPackageAsJson
