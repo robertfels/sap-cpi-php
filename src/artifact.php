@@ -1,7 +1,9 @@
 <?php
+
 namespace contiva\sapcpiphp;
 
-class Artifact {
+class Artifact
+{
 
     public string $Id;
     public string $Name;
@@ -12,18 +14,34 @@ class Artifact {
     public string $Receiver;
     public $ArtifactContent;
 
-    function __construct($Id,$Name) {
+    function __construct($Id, $Name)
+    {
         $this->Id = $Id;
         $this->Name = $Name;
-    } 
+    }
     
+    /**
+     * enrichMetadata
+     *
+     * @param  object $artifact
+     * @return void
+     */
+    public function enrichMetadata(object $artifact): void
+    {
+        $this->Description = $artifact->d->Description;
+        $this->PackageId = $artifact->d->PackageId;
+        $this->Version = $artifact->d->Version;
+        $this->Sender = $artifact->d->Sender;
+        $this->Receiver = $artifact->d->Receiver;
+    }
+
     /**
      * getPackageAsJson
      *
      * @return string
      */
-    public function asJson() {
+    public function asJson()
+    {
         return json_encode($this);
     }
-
 }

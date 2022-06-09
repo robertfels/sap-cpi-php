@@ -30,4 +30,23 @@ class Package {
         return json_encode($this);
     }
 
+    /**
+     * enrichMetadata
+     *
+     * @param  object $package
+     * @return void
+     */
+    public function enrichMetadata(object $package): void
+    {
+        $this->Description = $package->d->Description;
+        $this->PackageId = $package->d->PackageId;
+        $this->Version = $package->d->Version;
+        $this->SupportedPlatform = $package->d->SupportedPlatform;
+        $this->Products = $package->d->Products;
+        $this->Keywords = $package->d->Keywords;
+        $this->Countries = $package->d->Countries;
+        $this->Industries = $package->d->Industries;
+        $this->LineOfBusiness = $package->d->LineOfBusiness;
+    }
+
 }
