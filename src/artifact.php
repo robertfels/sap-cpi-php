@@ -19,6 +19,16 @@ class Artifact
         $this->Id = $Id;
         $this->Name = $Name;
     }
+
+    public static function withObject( object $artifact ) {
+        $instance = new self($artifact->d->Id,$artifact->d->Name);
+        $instance->Description = $artifact->d->Description;
+        $instance->PackageId = $artifact->d->PackageId;
+        $instance->Version = $artifact->d->Version;
+        $instance->Sender = $artifact->d->Sender;
+        $instance->Receiver = $artifact->d->Receiver;
+        return $instance;
+    }
     
     /**
      * enrichMetadata
