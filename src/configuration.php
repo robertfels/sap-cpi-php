@@ -60,10 +60,10 @@ class Configuration
      * @param  string $paramValue
      * @return bool
      */
-    public function changeConfiguration(string $paramName, string $paramValue) : bool
+    public function changeConfiguration(string $paramKey, string $paramValue) : bool
     {
         foreach ($this->list as $item) {
-            if ($item->ParameterName == $paramName) {
+            if ($item->ParameterKey == $paramKey) {
                 $item->ParameterValue = $paramValue;
                 return true;
             }
