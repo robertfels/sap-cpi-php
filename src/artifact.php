@@ -12,7 +12,7 @@ class Artifact
     public string $Version;
     public string $Sender;
     public string $Receiver;
-    public $ArtifactContent;
+    public string $ArtifactContent;
 
     function __construct($Id, $Name)
     {
