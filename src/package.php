@@ -24,10 +24,13 @@ class Package {
     public static function withObject( object $package ) {
         $instance = new self($package->d->Id,$package->d->Name,$package->d->ShortText);
         $instance->Description = $package->d->Description;
-        $instance->PackageId = $package->d->PackageId;
         $instance->Version = $package->d->Version;
-        $instance->Sender = $package->d->Sender;
-        $instance->Receiver = $package->d->Receiver;
+        $instance->SupportedPlatform = $package->d->SupportedPlatform;
+        $instance->Products = $package->d->Products;
+        $instance->Keywords = $package->d->Keywords;
+        $instance->Countries = $package->d->Countries;
+        $instance->Industries = $package->d->Industries;
+        $instance->LineOfBusiness = $package->d->LineOfBusiness;
         return $instance;
     }
     
