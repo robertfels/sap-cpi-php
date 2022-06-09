@@ -39,7 +39,6 @@ class Package {
     public function enrichMetadata(object $package): void
     {
         $this->Description = $package->d->Description;
-        $this->PackageId = $package->d->PackageId;
         $this->Version = $package->d->Version;
         $this->SupportedPlatform = $package->d->SupportedPlatform;
         $this->Products = $package->d->Products;

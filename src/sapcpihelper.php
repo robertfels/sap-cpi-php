@@ -115,6 +115,7 @@ class SapCpiHelper extends Connection
      */
     public function createArtifact(Artifact $artifact) : object
     {
+        unset($artifact->Version,$artifact->Sender,$artifact->Receiver);
         $path = '/api/v1/IntegrationDesigntimeArtifacts';
         $body = json_encode($artifact);
         return $this->post($body, $path);
