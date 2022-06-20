@@ -16,7 +16,7 @@
     },
     "autoload": {
         "psr-4": {
-            "contiva\\sapcpiphp\\": "contiva/src/"
+            "contiva\\sapcpiphp\\": "src/"
         }
     },
     "authors": [
