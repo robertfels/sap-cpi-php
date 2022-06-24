@@ -8,7 +8,7 @@ class ValueMapping {
     public string $Description;
     public string $PackageId;
     public string $Version;
-    public $ArtifactContent;
+    public $ArtifactContent; 
 
     function __construct($Id,$Name) {
         $this->Id = $Id;

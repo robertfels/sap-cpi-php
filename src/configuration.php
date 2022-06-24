@@ -7,7 +7,7 @@ class Configuration
 
     private string $Id;
     private string $Version;
-    private array $list;
+    private array $list; 
     
     /**
      * __construct

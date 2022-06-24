@@ -8,7 +8,7 @@ class Artifact
     public string $Id;
     public string $Name;
     public string $Description;
-    public string $PackageId;
+    public string $PackageId; 
     public string $Version;
     public string $Sender;
     public string $Receiver;

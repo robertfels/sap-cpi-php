@@ -5,7 +5,7 @@ namespace contiva\sapcpiphp;
 class Compositor {
 
 protected $composite = array();
-protected $use_reference;
+protected $use_reference; 
 protected $first_precedence;
 
 /**

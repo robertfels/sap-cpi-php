@@ -12,7 +12,7 @@ class Connection
 {
     // Die abgeleitete Klasse zwingen, diese Methoden zu definieren
     private string $hostname;
-    private int $port = 443;
+    private int $port = 443; 
     private string $path;
     private array $auth;
     private ?string $error;

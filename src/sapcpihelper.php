@@ -9,7 +9,7 @@ class SapCpiHelper extends Connection
     private string $packageId;
     private string $artifactVersion = "active";
     public ?object $artifact;
-    public ?object $package;
+    public ?object $package; 
 
     /*
      *  PACKAGES

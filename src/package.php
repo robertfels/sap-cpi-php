@@ -10,7 +10,7 @@ class Package {
     public $Version;
     public $SupportedPlatform = "SAP Cloud Integration";
     public $Products;
-    public $Keywords;
+    public $Keywords; 
     public $Countries;
     public $Industries;
     public $LineOfBusiness;
