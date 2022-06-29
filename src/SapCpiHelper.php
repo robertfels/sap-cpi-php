@@ -55,6 +55,23 @@ class SapCpiHelper extends Connection
     }
 
     /**
+     * downloadPackage
+     *
+     * @param  string $package
+     * @return object
+     */
+    public function downloadPackage(string $package)
+    {
+        $path = '/api/v1/IntegrationPackages(Id=%27' . $package . '%27)/$value';
+        $download = $this->download($path);
+
+        if (is_object($download))
+            return $download;
+
+        return $this->download($path);
+    }
+
+    /**
      * readFlowsOfPackage
      *
      * @param  string $packageId
