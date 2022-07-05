@@ -21,7 +21,7 @@ class SapCpiHelper extends Connection
      * @param Package $package
      * @return object
      */
-    public function createPackage(Package $package) : object
+    public function createPackage(SapCpiPackage $package) : object
     {
         $path = '/api/v1/IntegrationPackages';
         $body = json_encode($package);
@@ -101,7 +101,7 @@ class SapCpiHelper extends Connection
      * @param  Package $package
      * @return object
      */
-    public function updatePackage(Package $package) : object
+    public function updatePackage(SapCpiPackage $package) : object
     {
         $path = '/api/v1/IntegrationPackages(%27' . $package->Id . '%27)';
         $body = json_encode($package);
@@ -114,7 +114,7 @@ class SapCpiHelper extends Connection
      * @param  Package $package
      * @return object
      */
-    public function deletePackage(Package $package) : object
+    public function deletePackage(SapCpiPackage $package) : object
     {
         $package->Version = 'active';
         $path = '/api/v1/IntegrationPackages(%27' . $package->Id . '%27)';

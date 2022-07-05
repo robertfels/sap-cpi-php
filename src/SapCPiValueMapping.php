@@ -1,7 +1,7 @@
 <?php
 namespace contiva\sapcpiphp;
 
-class ValueMapping {
+class SapCpiValueMapping {
 
     public string $Id;
     public string $Name;
