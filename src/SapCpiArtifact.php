@@ -10,7 +10,7 @@ class SapCpiArtifact extends SapCpiConnection
 {
 
     private SapCpiConnection $connection;
-    public string $Id;
+    public $Id;
     public $Name;
     public $Description;
     public $PackageId; 
@@ -55,7 +55,7 @@ class SapCpiArtifact extends SapCpiConnection
     public function list() : array {
         $result = $this->connection->request("GET","/IntegrationDesigntimeArtifacts");
         if ($result = json_decode($result->getBody())) {
-            return $result->d->results;
+            return $this->sort($result->d->results);
         } else {
             return null;
         }
@@ -138,6 +138,13 @@ class SapCpiArtifact extends SapCpiConnection
             }
         }
         return json_encode($obj);
+    }
+
+    private function sort($input) {
+        $input = json_decode(json_encode($input), true);
+        array_multisort( array_column($input, "Name"), SORT_ASC, $input );
+        $input = json_decode(json_encode($input));
+        return $input;
     }
     
 }
