@@ -13,7 +13,6 @@ class SapCpiConnection {
     private int $port;
     private string $username;
     private string $password;
-    private Client $client;
 
     public function __construct(string $hostname,int $port,string $username,string $password)
     {
@@ -23,9 +22,9 @@ class SapCpiConnection {
         $this->password = $password;
         $this->cookie = new CookieJar();
 
-        $this->client = new Client(['cookies' => $this->cookie]);
+        $client = new Client(['cookies' => $this->cookie]);
         
-        $response = $this->client->request('GET', 'https://' . $this->hostname . ':' . $this->port . '/api/v1', [
+        $response = $client->request('GET', 'https://' . $this->hostname . ':' . $this->port . '/api/v1', [
             'auth' => [$this->username,$this->password],
             'cookies' => $this->cookie,
             'connect_timeout' => 5,
@@ -40,6 +39,9 @@ class SapCpiConnection {
     }
 
     public function request(string $method = ('GET'|'POST'|'FETCH'|'PUT'|'MERGE'),string $path = null,string $body = null) {
+
+            $client = new Client(['cookies' => $this->cookie]);
+
             $sessionParams = array(
                 'auth' => [$this->username,$this->password],
                 'cookies' => $this->cookie,
@@ -54,7 +56,7 @@ class SapCpiConnection {
             if ($body == null)
             unset($sessionParams['body']);
 
-            $response = $this->client->request($method, 'https://' . $this->hostname . ':' . $this->port . '/api/v1' . $path, $sessionParams);
+            $response = $client->request($method, 'https://' . $this->hostname . ':' . $this->port . '/api/v1' . $path, $sessionParams);
 
             return $response;
     }
