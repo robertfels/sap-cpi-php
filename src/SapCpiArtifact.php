@@ -43,20 +43,20 @@ class SapCpiArtifact extends SapCpiConnection
         return $this;
     }
     
-    public function pullContent() : bool
+    public function pullContent() : SapCpiArtifact
     {
         $result = $this->connection->request("GET","/IntegrationDesigntimeArtifacts(Id='" . $this->Id . "',Version='" . $this->Version . "')/\$value");
         if ($result->getBody())
         $this->ArtifactContent = base64_encode($result->getBody());
-        return true;
+        return $this;
     }
 
-    public function pullConfiguration() : bool
+    public function pullConfiguration() : SapCpiArtifact
     {
         $json = $this->connection->request("GET","/IntegrationDesigntimeArtifacts(Id='" . $this->Id . "',Version='" . $this->Version . "')/Configurations");
         $data = json_decode($json->getBody());
         $this->Configuration = $data->d->results;
-        return true;
+        return $this;
     }
 
     public function list() : array {
