@@ -2,9 +2,9 @@
 
 namespace contiva\sapcpiphp;
 
-use Psr\Http\Message\ResponseInterface;
-use GuzzleHttp\Exception\BadResponseException;
 use stdClass;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\BadResponseException;
 
 class SapCpiArtifact extends SapCpiConnection
 {
@@ -29,11 +29,18 @@ class SapCpiArtifact extends SapCpiConnection
         foreach($instance as $k => $v) $this->$k = $v;
     }
 
-    public function pull ($id = null) {
-        $this->Id = ($id != null) ? $id : $this->Id;
-        $json = $this->connection->request("GET","/IntegrationDesigntimeArtifacts(Id='".$this->Id."',Version='active')");
-        $data = json_decode($json->getBody(), true);
-        foreach ($data['d'] as $key => $value) $this->{$key} = $value;
+    public function pull ($id = null,bool $response = true) : SapCpiArtifact {
+        try {
+            $this->Id = ($id != null) ? $id : $this->Id;
+            $json = $this->connection->request("GET","/IntegrationDesigntimeArtifacts(Id='".$this->Id."',Version='active')");
+            $data = json_decode($json->getBody(), true);
+            foreach ($data['d'] as $key => $value) $this->{$key} = $value;
+        } catch (ClientException $e) {
+            if (($e->getResponse()->getStatusCode() != 404) && ($response == false)) {
+                throw $e;
+            }
+        }
+        return $this;
     }
     
     public function pullContent() : bool
@@ -41,15 +48,15 @@ class SapCpiArtifact extends SapCpiConnection
         $result = $this->connection->request("GET","/IntegrationDesigntimeArtifacts(Id='" . $this->Id . "',Version='" . $this->Version . "')/\$value");
         if ($result->getBody())
         $this->ArtifactContent = base64_encode($result->getBody());
-        return false;
+        return true;
     }
 
-    public function pullConfiguration()
+    public function pullConfiguration() : bool
     {
         $json = $this->connection->request("GET","/IntegrationDesigntimeArtifacts(Id='" . $this->Id . "',Version='" . $this->Version . "')/Configurations");
         $data = json_decode($json->getBody());
         $this->Configuration = $data->d->results;
-        return $this->Configuration;
+        return true;
     }
 
     public function list() : array {
@@ -61,14 +68,19 @@ class SapCpiArtifact extends SapCpiConnection
         }
     }
 
-    public function delete() : ResponseInterface {
+    public function delete() : bool {
         try {
             $result = $this->connection->request("DELETE","/IntegrationDesigntimeArtifacts(Id='".$this->Id."',Version='".$this->Version."')");  
-            return $result;
+            if ($result->getStatusCode() == 202)
+            return true;
+            return false;
         }
         catch (BadResponseException $e) {
-            $response = $e->getResponse();
-            return $response;
+            if ($e->getResponse()->getStatusCode() == 404) {
+                return false;
+            } else {
+                throw $e;
+            }
         }
     }
 
@@ -79,26 +91,34 @@ class SapCpiArtifact extends SapCpiConnection
         return $result->getStatusCode();
     }
 
-    public function create () : ResponseInterface {
+    public function create () : bool {
         try {
             $this->version = null;
             $result = $this->connection->request("POST","/IntegrationDesigntimeArtifacts",$this->__toString());
-            $this->response = $result;
-            return $result;
+            if ($result->getStatusCode() == 201)
+            return true;
+            return false;
         }
         catch (BadResponseException $e) {
-            $response = $e->getResponse();
-            return $response;
+            if ($e->getResponse()->getStatusCode() == 409) {
+                return false;
+            } else {
+                throw $e;
+            }
         }
     }
 
     public function deploy() : bool
     {
-        $result = $this->connection->request("DELETE","/DeployIntegrationDesigntimeArtifact?Id='" . $this->Id . "'&Version='" . $this->Version . "'");
-        return $result->getStatusCode();
-        if ($result->getStatusCode() == 202)
-        return true;
-        return false;
+        try {
+            $result = $this->connection->request("DELETE","/DeployIntegrationDesigntimeArtifact?Id='" . $this->Id . "'&Version='" . $this->Version . "'");
+            return $result->getStatusCode();
+            if ($result->getStatusCode() == 202)
+            return true;
+            return false;
+        } catch (ClientException $e) {
+            throw $e;
+        }
     }
 
     public function getConfiguration()
@@ -115,12 +135,6 @@ class SapCpiArtifact extends SapCpiConnection
             }
             $i++;
         }
-    }
-
-    public function package() : SapCpiPackage {
-        $result = new SapCpiPackage($this->connection,$this->PackageId);
-        $result->pull();
-        return $result;
     }
 
     public function __toString() {

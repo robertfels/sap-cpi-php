@@ -1,7 +1,9 @@
 <?php
 namespace contiva\sapcpiphp;
 
+use RuntimeException;
 use contiva\sapcpiphp\SapCpiConnection;
+use GuzzleHttp\Exception\ClientException;
 
 class SapCpiPackage extends SapCpiConnection {
 
@@ -27,9 +29,11 @@ class SapCpiPackage extends SapCpiConnection {
     public $LineOfBusiness;
     public $PackageContent = null;
 
-    function __construct(SapCpiConnection $connection,$id=null) {
+    function __construct(SapCpiConnection $connection,string $Id = null,string $Name = null,string $ShortText = null) {
         $this->connection = $connection;
-        $this->Id = ($id != null) ? $id : null;
+        $this->Id = ($Id != null) ? $Id : null;
+        $this->Name = ($Name != null) ? $Name : null;
+        $this->ShortText = ($ShortText != null) ? $ShortText : null;
     }
 
     public static function cast($instance, SapCpiConnection $connection, $className='contiva\sapcpiphp\Package')
@@ -63,12 +67,26 @@ class SapCpiPackage extends SapCpiConnection {
             return null;
         }
     }
-
-    public function pull ($id = null) {
-        $this->Id = ($id != null) ? $id : $this->Id;
-        $json = $this->connection->request("GET","/IntegrationPackages('".$this->Id."')");
-        $data = json_decode($json->getBody(), true);
-        foreach ($data['d'] as $key => $value) $this->{$key} = $value;
+    
+    /**
+     * pull
+     *
+     * @param  string $id
+     * @param  bool $response
+     * @return SapCpiPackage
+     */
+    public function pull ($id = null,bool $response = true) : SapCpiPackage{
+        try {
+            $this->Id = ($id != null) ? $id : $this->Id;
+            $json = $this->connection->request("GET","/IntegrationPackages('".$this->Id."')");
+            $data = json_decode($json->getBody(), true);
+            foreach ($data['d'] as $key => $value) $this->{$key} = $value;
+        } catch (ClientException $e) {
+            if (($e->getResponse()->getStatusCode() != 404) && ($response == false)) {
+                throw $e;
+            }
+        }
+        return $this;
     }
 
     public function update () : bool  {
@@ -78,19 +96,44 @@ class SapCpiPackage extends SapCpiConnection {
         return $result->getStatusCode();
     }
 
-    public function create () : bool {
-        $result = $this->connection->request("POST","/IntegrationPackages",$this->__toString());
-        if ($result->getStatusCode() == 201)
-        return true;
-        return false;
+    public function create (string $Name = null, string $ShortText = null) : bool {
+        try {
+            //Declare manuals
+            if ($Name) $this->Name = $Name;
+            if ($ShortText) $this->ShortText = $ShortText;
+
+            //Exceptions
+            if ($this->Name == null) throw new RuntimeException('Name is required for package creation');
+            if ($this->Id == null) throw new RuntimeException('ShortText is required for package creation');
+            if ($this->ShortText == null) throw new RuntimeException('ShortText is required for package creation');
+
+            //Do it
+            $result = $this->connection->request("POST","/IntegrationPackages",$this->__toString());
+            if ($result->getStatusCode() == 201)
+            return true;
+            return false;
+        } catch (ClientException $e) {
+            if ($e->getResponse()->getStatusCode() == 409) {
+                return false;
+            } else {
+                throw $e;
+            }
+        }
     }
 
     public function delete () : bool {
-        $result = $this->connection->request("DELETE","/IntegrationPackages('".$this->Id."')");
-        return $result->getStatusCode();
-        if ($result->getStatusCode() == 202)
-        return true;
-        return false;
+        try {
+            $result = $this->connection->request("DELETE","/IntegrationPackages('".$this->Id."')");
+            if ($result->getStatusCode() == 202)
+            return true;
+            return false;
+        } catch (ClientException $e) {
+            if ($e->getResponse()->getStatusCode() == 404) {
+                return false;
+            } else {
+                throw $e;
+            }
+        }
     }
 
     public function __toString() {
