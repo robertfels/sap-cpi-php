@@ -94,7 +94,10 @@ class SapCpiArtifact extends SapCpiConnection
     public function create () : bool {
         try {
             $this->version = null;
+            $tmp = $this->Configuration;
+            $this->Configuration = null;
             $result = $this->connection->request("POST","/IntegrationDesigntimeArtifacts",$this->__toString());
+            $this->Configuration = $tmp;
             if ($result->getStatusCode() == 201)
             return true;
             return false;
