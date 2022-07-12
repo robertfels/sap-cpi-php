@@ -131,23 +131,41 @@ class SapCpiArtifact extends SapCpiConnection
 
     public function changeConfiguration($key, $value, $datatype)
     {
+        $set = false;
         $i = 0;
         foreach ($this->Configuration as $val) {
             if ($val->ParameterKey == $key) {
                 $this->Configuration[$i]->ParameterValue = $value;
                 $this->Configuration[$i]->DataType = $datatype;
+                $set = true;
+                break;
             }
             $i++;
         }
-        if ($i == 0) {
+        if ($set == false) {
             $obj = new stdClass();
             $obj->ParameterKey = $key;
             $obj->ParameterValue = $value;
             $obj->DataType = $datatype;
-            $objArray = array($obj);
             
-            $this->Configuration = array_push($this->Configuration, $objArray);
+            $this->Configuration[] = $obj;
         }
+    }
+
+    public function pushConfiguration($key = null) : array {
+        $msg = null;
+        foreach ($this->Configuration as $conf) {
+            if (($key == null) || (($key != null) && ($key == $conf->ParameterKey))) {
+                $body = json_encode(['ParameterValue'=>$conf->ParameterValue,'DataType'=>$conf->DataType]);
+                try {
+                    $result = $this->connection->request("PUT","/IntegrationDesigntimeArtifacts(Id='".$this->Id."',Version='".$this->Version."')/%24links/Configurations('".$conf->ParameterKey."')",$body);
+                    $msg[$conf->ParameterKey] = $result->getStatusCode();
+                } catch (ClientException $e) {
+                    $msg[$conf->ParameterKey] = $e->getResponse()->getStatusCode();
+                }
+            }
+        }
+        return $msg;
     }
 
     public function __toString() {
