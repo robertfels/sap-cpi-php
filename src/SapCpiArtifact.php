@@ -114,9 +114,9 @@ class SapCpiArtifact extends SapCpiConnection
     public function deploy() : bool
     {
         try {
-            $result = $this->connection->request("DELETE","/DeployIntegrationDesigntimeArtifact?Id='" . $this->Id . "'&Version='" . $this->Version . "'");
+            $result = $this->connection->request("POST","/DeployIntegrationDesigntimeArtifact?Id='" . $this->Id . "'&Version='" . $this->Version . "'");
             return $result->getStatusCode();
-            if ($result->getStatusCode() == 202)
+            if ($result->getStatusCode() == 201)
             return true;
             return false;
         } catch (ClientException $e) {
