@@ -70,8 +70,8 @@ class SapCpiArtifact extends SapCpiConnection
 
     public function delete() : bool {
         try {
-            $result = $this->connection->request("DELETE","/IntegrationDesigntimeArtifacts(Id='".$this->Id."',Version='".$this->Version."')");  
-            if ($result->getStatusCode() == 202)
+            $result = $this->connection->request("DELETE","/IntegrationDesigntimeArtifacts(Id='".$this->Id."',Version='".$this->Version."')");
+            if ($result->getStatusCode() == 200)
             return true;
             return false;
         }
@@ -103,7 +103,7 @@ class SapCpiArtifact extends SapCpiConnection
             return false;
         }
         catch (BadResponseException $e) {
-            if ($e->getResponse()->getStatusCode() == 409) {
+            if ($e->getResponse()->getStatusCode() == 500) {
                 return false;
             } else {
                 throw $e;
@@ -129,14 +129,24 @@ class SapCpiArtifact extends SapCpiConnection
         return $this->Configuration;
     }
 
-    public function changeConfiguration($key, $value)
+    public function changeConfiguration($key, $value, $datatype)
     {
         $i = 0;
         foreach ($this->Configuration as $val) {
             if ($val->ParameterKey == $key) {
                 $this->Configuration[$i]->ParameterValue = $value;
+                $this->Configuration[$i]->DataType = $datatype;
             }
             $i++;
+        }
+        if ($i == 0) {
+            $obj = new stdClass();
+            $obj->ParameterKey = $key;
+            $obj->ParameterValue = $value;
+            $obj->DataType = $datatype;
+            $objArray = array($obj);
+            
+            $this->Configuration = array_push($this->Configuration, $objArray);
         }
     }
 
