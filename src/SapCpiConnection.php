@@ -93,7 +93,6 @@ class SapCpiConnection
             $errorCodes = array("403", "500", "503", "429");
             if ((in_array($e->getResponse()->getStatusCode(),$errorCodes)) && ($retry != true)) {
                 $this->auth();
-                echo "Rety";
                 $retry = true;
                 goto sendrequest;
             } else {
