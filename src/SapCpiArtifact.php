@@ -55,6 +55,7 @@ class SapCpiArtifact extends SapCpiConnection
 
     public function pullConfiguration() : SapCpiArtifact
     {
+        $this->Configuration = array();
         $json = $this->connection->request("GET","/IntegrationDesigntimeArtifacts(Id='" . $this->Id . "',Version='" . $this->Version . "')/Configurations");
         $data = json_decode($json->getBody());
         $this->Configuration = $data->d->results;
@@ -133,6 +134,9 @@ class SapCpiArtifact extends SapCpiConnection
 
     public function changeConfiguration($key=null, $value=null, $datatype=null)
     {
+        if (!isset($this->Configuration))
+        $this->Configuration = array();
+        
         $set = false;
         $i = 0;
         foreach ($this->Configuration as $val) {
