@@ -134,16 +134,14 @@ class SapCpiArtifact extends SapCpiConnection
     {
         $set = false;
         $i = 0;
-        if ($datatype == null) {
-            foreach ($this->Configuration as $val) {
-                if ($val->ParameterKey == $key) {
-                    $this->Configuration[$i]->ParameterValue = $value;
-                    $this->Configuration[$i]->DataType = $datatype;
-                    $set = true;
-                    break;
-                }
-                $i++;
+        foreach ($this->Configuration as $val) {
+            if ($val->ParameterKey == $key) {
+                $this->Configuration[$i]->ParameterValue = $value;
+                $this->Configuration[$i]->DataType = $datatype;
+                $set = true;
+                break;
             }
+            $i++;
         }
         if ($set == false) {
             $obj = new stdClass();
