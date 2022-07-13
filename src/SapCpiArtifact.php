@@ -18,6 +18,7 @@ class SapCpiArtifact extends SapCpiConnection
     public $Sender;
     public $Receiver;
     public $ArtifactContent = null;
+    public array $Configuration = array();
 
     function __construct(SapCpiConnection $connection,$id=null) {
         $this->connection = $connection;
@@ -133,14 +134,16 @@ class SapCpiArtifact extends SapCpiConnection
     {
         $set = false;
         $i = 0;
-        foreach ($this->Configuration as $val) {
-            if ($val->ParameterKey == $key) {
-                $this->Configuration[$i]->ParameterValue = $value;
-                $this->Configuration[$i]->DataType = $datatype;
-                $set = true;
-                break;
+        if ($datatype == null) {
+            foreach ($this->Configuration as $val) {
+                if ($val->ParameterKey == $key) {
+                    $this->Configuration[$i]->ParameterValue = $value;
+                    $this->Configuration[$i]->DataType = $datatype;
+                    $set = true;
+                    break;
+                }
+                $i++;
             }
-            $i++;
         }
         if ($set == false) {
             $obj = new stdClass();
