@@ -129,7 +129,7 @@ class SapCpiArtifact extends SapCpiConnection
         return $this->Configuration;
     }
 
-    public function changeConfiguration($key, $value, $datatype)
+    public function changeConfiguration($key=null, $value=null, $datatype=null)
     {
         $set = false;
         $i = 0;
