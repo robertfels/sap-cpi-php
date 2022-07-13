@@ -107,7 +107,7 @@ class SapCpiArtifact extends SapCpiConnection
         }
         catch (BadResponseException $e) {
             if ($e->getResponse()->getStatusCode() == 500) {
-                return false;
+                throw $e;
             } else {
                 throw $e;
             }
@@ -136,7 +136,7 @@ class SapCpiArtifact extends SapCpiConnection
     {
         if (!isset($this->Configuration))
         $this->Configuration = array();
-        
+
         $set = false;
         $i = 0;
         foreach ($this->Configuration as $val) {
