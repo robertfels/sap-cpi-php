@@ -22,6 +22,7 @@ class SapCpiArtifact extends SapCpiConnection
 
     function __construct(SapCpiConnection $connection,$id=null) {
         $this->connection = $connection;
+        $this->Configuration = array();
         $this->Id = ($id != null) ? $id : null;
     }
 
