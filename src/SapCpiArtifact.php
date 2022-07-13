@@ -18,7 +18,7 @@ class SapCpiArtifact extends SapCpiConnection
     public $Sender;
     public $Receiver;
     public $ArtifactContent = null;
-    public array $Configuration = array();
+    public ?array $Configuration = array();
 
     function __construct(SapCpiConnection $connection,$id=null) {
         $this->connection = $connection;
@@ -96,7 +96,7 @@ class SapCpiArtifact extends SapCpiConnection
         try {
             $this->version = null;
             $tmp = $this->Configuration;
-            $this->Configuration = null;
+            unset($this->Configuration);
             $result = $this->connection->request("POST","/IntegrationDesigntimeArtifacts",$this->__toString());
             $this->Configuration = $tmp;
             if ($result->getStatusCode() == 201)
