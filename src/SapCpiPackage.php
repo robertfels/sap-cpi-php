@@ -38,7 +38,7 @@ class SapCpiPackage extends SapCpiConnection {
 
     public function changeConnection(SapCpiConnection $connection) : SapCpiPackage {
         $this->connection = $connection;
-        return $this;
+        return $this; 
     }
 
     public static function cast($instance, SapCpiConnection $connection, $className='contiva\sapcpiphp\Package')
