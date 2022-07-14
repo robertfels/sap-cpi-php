@@ -26,6 +26,11 @@ class SapCpiArtifact extends SapCpiConnection
         $this->Id = ($id != null) ? $id : null;
     }
 
+    public function changeConnection(SapCpiConnection $connection) : SapCpiArtifact {
+        $this->connection = $connection;
+        return $this;
+    }
+
     public function push(stdClass $instance)
     {
         foreach($instance as $k => $v) $this->$k = $v;
