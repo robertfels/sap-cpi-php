@@ -2,14 +2,14 @@
 
 namespace contiva\sapcpiphp;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Cookie\CookieJar;
-use GuzzleHttp\Event\ErrorEvent;
-use Psr\Http\Message\ResponseInterface;
-use GuzzleHttp\Exception\ClientException;
+use DateTime;
 use RuntimeException;
-
+use GuzzleHttp\Cookie\CookieJar;
+use GuzzleHttp\Exception\ClientException;
 use function PHPUnit\Framework\throwException;
+
+use Psr\Http\Message\{RequestInterface, ResponseInterface};
+use GuzzleHttp\{Client, HandlerStack, Middleware, RetryMiddleware};
 
 /**
  * SapCpiConnection
@@ -59,10 +59,38 @@ class SapCpiConnection
      */
     public function request(string $method = ('GET' | 'POST' | 'FETCH' | 'PUT' | 'MERGE' | 'DELETE'), string $path = null, string $body = null): ResponseInterface
     {
+
+        $maxRetries = 3;
+        $errors = array(429,500,503);
+
+        $decider = function(int $retries, RequestInterface $request, ResponseInterface $response = null) use ($maxRetries,$errors) : bool {
+            return 
+                $retries < $maxRetries
+                && null !== $response 
+                && (in_array($response->getStatusCode(), $errors, true));
+        };
+
+        $delay = function(int $retries, ResponseInterface $response) : int {
+            if (!$response->hasHeader('Retry-After')) {
+                return RetryMiddleware::exponentialDelay($retries) * 1000;
+            }
+
+            $retryAfter = $response->getHeaderLine('Retry-After');
+
+            if (!is_numeric($retryAfter)) {
+                $retryAfter = (new DateTime($retryAfter))->getTimestamp() - time();
+            }
+
+            return (int) $retryAfter * 1000;
+        };
+
+        $stack = HandlerStack::create();
+        $stack->push(Middleware::retry($decider, $delay));
+
         $retry = false;
         sendrequest:
         try {
-            $client = new Client(['cookies' => $this->cookie]);
+            $client = new Client(['cookies' => $this->cookie,'handler'  => $stack]);
 
             if ($this->token == null)
             $this->auth();
@@ -109,7 +137,36 @@ class SapCpiConnection
      */
     private function auth()
     {
-        $client = new Client(['cookies' => $this->cookie]);
+
+        $maxRetries = 3;
+        $errors = array(429,500,503);
+
+        $decider = function(int $retries, RequestInterface $request, ResponseInterface $response = null) use ($maxRetries,$errors) : bool {
+            return 
+                $retries < $maxRetries
+                && null !== $response 
+                && (in_array($response->getStatusCode(), $errors, true));
+        };
+
+        $delay = function(int $retries, ResponseInterface $response) : int {
+            if (!$response->hasHeader('Retry-After')) {
+                return RetryMiddleware::exponentialDelay($retries) * 1000;
+            }
+
+            $retryAfter = $response->getHeaderLine('Retry-After');
+
+            if (!is_numeric($retryAfter)) {
+                $retryAfter = (new DateTime($retryAfter))->getTimestamp() - time();
+            }
+
+            return (int) $retryAfter * 1000;
+        };
+
+        $stack = HandlerStack::create();
+        $stack->push(Middleware::retry($decider, $delay));
+
+
+        $client = new Client(['cookies' => $this->cookie,'handler'  => $stack]);
 
         $response = $client->request('GET', 'https://' . $this->hostname . ':' . $this->port . '/api/v1', [
             'auth' => [$this->username, $this->password],
