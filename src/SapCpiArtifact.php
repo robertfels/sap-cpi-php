@@ -103,9 +103,14 @@ class SapCpiArtifact extends SapCpiConnection
         try {
             $this->version = null;
             $tmp = $this->Configuration;
+            $tmp2 = $this->Configurations;
+            $this->Configuration = array();
+            $this->Configurations = array();
             unset($this->Configuration);
+            unset($this->Configurations);
             $result = $this->connection->request("POST","/IntegrationDesigntimeArtifacts",$this->__toString());
             $this->Configuration = $tmp;
+            $this->Configurations = $tmp2;
             if ($result->getStatusCode() == 201)
             return true;
             return false;
