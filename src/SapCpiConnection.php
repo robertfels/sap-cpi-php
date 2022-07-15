@@ -90,7 +90,7 @@ class SapCpiConnection
         $retry = false;
         sendrequest:
         try {
-            $client = new Client(['cookies' => $this->cookie,'handler'  => $stack]);
+            $client = new Client(['cookies' => $this->cookie,'handler'  => $stack,'connect_timeout' => 5]);
 
             if ($this->token == null)
             $this->auth();
@@ -166,7 +166,7 @@ class SapCpiConnection
         $stack->push(Middleware::retry($decider, $delay));
 
 
-        $client = new Client(['cookies' => $this->cookie,'handler'  => $stack]);
+        $client = new Client(['cookies' => $this->cookie,'handler'  => $stack,'connect_timeout' => 5]);
 
         $response = $client->request('GET', 'https://' . $this->hostname . ':' . $this->port . '/api/v1', [
             'auth' => [$this->username, $this->password],
