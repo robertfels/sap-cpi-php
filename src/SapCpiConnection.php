@@ -72,7 +72,7 @@ class SapCpiConnection
 
         $delay = function(int $retries, ResponseInterface $response) : int {
             if (!$response->hasHeader('Retry-After')) {
-                return RetryMiddleware::exponentialDelay($retries);
+                return RetryMiddleware::exponentialDelay($retries) * 1000;
             }
 
             $retryAfter = $response->getHeaderLine('Retry-After');
@@ -150,7 +150,7 @@ class SapCpiConnection
 
         $delay = function(int $retries, ResponseInterface $response) : int {
             if (!$response->hasHeader('Retry-After')) {
-                return RetryMiddleware::exponentialDelay($retries);
+                return RetryMiddleware::exponentialDelay($retries) * 1000;
             }
 
             $retryAfter = $response->getHeaderLine('Retry-After');
