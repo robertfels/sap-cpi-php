@@ -85,7 +85,10 @@ class SapCpiPackage extends SapCpiConnection {
             $this->Id = ($id != null) ? $id : $this->Id;
             $json = $this->connection->request("GET","/IntegrationPackages('".$this->Id."')");
             $data = json_decode($json->getBody(), true);
-            foreach ($data['d'] as $key => $value) $this->{$key} = $value;
+            foreach ($data['d'] as $key => $value) {
+                if ($key != "__metadata" && $key =! "__deferred")
+                $this->{$key} = $value;
+            } 
         } catch (ClientException $e) {
             if (($e->getResponse()->getStatusCode() != 404) && ($response == false)) {
                 throw $e;

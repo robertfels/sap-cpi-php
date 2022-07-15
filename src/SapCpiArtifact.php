@@ -41,7 +41,10 @@ class SapCpiArtifact extends SapCpiConnection
             $this->Id = ($id != null) ? $id : $this->Id;
             $json = $this->connection->request("GET","/IntegrationDesigntimeArtifacts(Id='".$this->Id."',Version='active')");
             $data = json_decode($json->getBody(), true);
-            foreach ($data['d'] as $key => $value) $this->{$key} = $value;
+            foreach ($data['d'] as $key => $value) {
+                if ($key != "__metadata" && $key =! "__deferred")
+                $this->{$key} = $value;
+            } 
         } catch (ClientException $e) {
             if (($e->getResponse()->getStatusCode() != 404) && ($response == false)) {
                 throw $e;
@@ -103,14 +106,10 @@ class SapCpiArtifact extends SapCpiConnection
         try {
             $this->version = null;
             $tmp = $this->Configuration;
-            $tmp2 = $this->Configurations;
             $this->Configuration = array();
-            $this->Configurations = array();
             unset($this->Configuration);
-            unset($this->Configurations);
             $result = $this->connection->request("POST","/IntegrationDesigntimeArtifacts",$this->__toString());
             $this->Configuration = $tmp;
-            $this->Configurations = $tmp2;
             if ($result->getStatusCode() == 201)
             return true;
             return false;
