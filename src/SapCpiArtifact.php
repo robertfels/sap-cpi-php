@@ -42,7 +42,7 @@ class SapCpiArtifact extends SapCpiConnection
             $json = $this->connection->request("GET","/IntegrationDesigntimeArtifacts(Id='".$this->Id."',Version='active')");
             $data = json_decode($json->getBody(), true);
             foreach ($data['d'] as $key => $value) {
-                if ($key != "__metadata" && $key =! "__deferred")
+                if ($key != "__metadata" && $key != "__deferred")
                 $this->{$key} = $value;
             } 
         } catch (ClientException $e) {
