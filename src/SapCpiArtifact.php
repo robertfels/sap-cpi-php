@@ -177,6 +177,7 @@ class SapCpiArtifact extends SapCpiConnection
                     $msg[$conf->ParameterKey] = $result->getStatusCode();
                 } catch (ClientException $e) {
                     $msg[$conf->ParameterKey] = $e->getResponse()->getStatusCode();
+                    continue;
                 }
             }
         }
