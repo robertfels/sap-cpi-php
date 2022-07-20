@@ -81,7 +81,7 @@ class SapCpiArtifact extends SapCpiConnection
 
     public function delete() : bool {
         try {
-            $result = $this->connection->request("DELETE","/IntegrationDesigntimeArtifacts(Id='".$this->Id."',Version='".$this->Version."')");
+            $result = $this->connection->request("DELETE","/IntegrationDesigntimeArtifacts(Id='".$this->Id."',Version='active')");
             if ($result->getStatusCode() == 200)
             return true;
             return false;
