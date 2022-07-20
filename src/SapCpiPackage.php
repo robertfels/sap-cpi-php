@@ -123,6 +123,8 @@ class SapCpiPackage extends SapCpiConnection {
         } catch (ClientException $e) {
             if ($e->getResponse()->getStatusCode() == 409) {
                 return false;
+            } else if ($e->getResponse()->getStatusCode() == 500) {
+                return false;
             } else {
                 throw $e;
             }
