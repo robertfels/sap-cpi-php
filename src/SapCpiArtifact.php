@@ -192,6 +192,8 @@ class SapCpiArtifact extends SapCpiConnection
         unset($obj->Version);
         unset($obj->ModifiedBy);
         unset($obj->ModifiedDate);
+        unset($obj->Sender);
+        unset($obj->Receiver);
         unset($obj->Configurations);
         unset($obj->Resources);
         $keys = get_object_vars($obj);
