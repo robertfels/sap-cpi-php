@@ -183,6 +183,22 @@ class SapCpiConnection
 
         return true;
     }
+
+    public function lisArtifacts() : array {
+        $result = $this->request("GET","/IntegrationRuntimeArtifacts");
+        if ($result = json_decode($result->getBody())) {
+            return $this->sort($result->d->results);
+        } else {
+            return null;
+        }
+    }
+
+    private function sort($input) {
+        $input = json_decode(json_encode($input), true);
+        array_multisort( array_column($input, "Name"), SORT_ASC, $input );
+        $input = json_decode(json_encode($input));
+        return $input;
+    }
     
     /**
      * package instance
